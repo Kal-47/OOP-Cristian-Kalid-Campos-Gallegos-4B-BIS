@@ -5,7 +5,7 @@ import os
 from abc import ABC, abstractmethod #
 
 class SmartDevice(ABC):
-    def __init__(self, name: string):
+    def __init__(self, name: str):
         self.name = name 
     
     @abstractmethod
@@ -16,7 +16,6 @@ class SmartConsole(SmartDevice):
     def __init__(self):
         super().__init__("Playstation 3")
 
-    @abstractmethod
     def turn_on(self):
         return f"{self.name}, is reproducing music."
 
@@ -24,7 +23,6 @@ class SmartProjector(SmartDevice):
     def __init__(self):
         super().__init__("VistaVision 2.0")
 
-    @abstractmethod
     def turn_on(self):
         return f'{self.name}, Is playing a movie'
 
@@ -50,8 +48,8 @@ class HomeLabApp(tk.Tk):
         icon_dir = os.path.join(current_dir, "app_icon.png")
 
 
-        if op.path.exists(icon_dir):
-            self.app_icon = tk.PhotoImage(file="current_dir")
+        if os.path.exists(icon_dir):
+            self.app_icon = tk.PhotoImage(file=icon_dir)
             self.iconphoto = (True,self.app_icon)
         else:
             print("The icon doesnt exists.")
@@ -79,7 +77,7 @@ class HomeLabApp(tk.Tk):
         # Selection Group (Radiobuttons)
         group_box = tk.LabelFrame(
             self,
-            text=" Select an Option ",
+            text=" Select an sostion ",
             font=("Helvetica", 15, "bold"),
             padx=15,
             pady=10
@@ -118,7 +116,7 @@ class HomeLabApp(tk.Tk):
         # Output / Results Box
         self.lbl_output = tk.Label(
             self,
-            text="Select an option above and click 'EXECUTE ACTION'.",
+            text="Select an sostion above and click 'EXECUTE ACTION'.",
             font=("Arial", 10, "italic"),
             bg="#ecf0f1",
             fg="#34495e",
@@ -134,11 +132,11 @@ class HomeLabApp(tk.Tk):
         chosen_key = self.selected_key.get()
 
         # 2. Retrieve the active polymorphic object
-        active_object: BaseItem = self.items[chosen_key]
+        active_object: SmartDevice = self.items[chosen_key]
 
         # 3. POLYMORPHIC EXECUTION:
         # No 'if/elif' logic needed. Python runs the appropriate implementation!
-        result_message = active_object.execute_action()
+        result_message = active_object.turn_on()
 
         # 4. Display result in the UI
         self.lbl_output.config(text=result_message, font=("Arial", 10, "normal"))
