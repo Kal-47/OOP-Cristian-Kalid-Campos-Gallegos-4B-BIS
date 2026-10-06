@@ -68,7 +68,7 @@ class HomeLabApp(tk.Tk):
 
         # --- 1. WINDOW SETTINGS---
         self.title("Lab 6: Polymorphism with GUI by - Cristian Kalid Campos Gallegos")
-        self.geometry("480x360")
+        self.geometry("1000x1000")
         self.resizable(False, False)
 
         current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -88,6 +88,7 @@ class HomeLabApp(tk.Tk):
             "Console": SmartConsole(),
             "Projector": SmartProjector(),
             "Server": SmartServer(),
+            "Laptop": SmartLap(),
         }
 
         # Build visual components
@@ -106,7 +107,7 @@ class HomeLabApp(tk.Tk):
         # Selection Group (Radiobuttons)
         group_box = tk.LabelFrame(
             self,
-            text=" Select an sostion ",
+            text=" Select an option ",
             font=("Helvetica", 15, "bold"),
             padx=15,
             pady=10
@@ -131,7 +132,7 @@ class HomeLabApp(tk.Tk):
         btn_action = tk.Button(
             self,
             text="Turn On Device",
-            command=self._handle_action,
+            command=self._handle_action_on,
             bg="#2980b9",
             fg="white",
             font=("Arial", 10, "bold"),
@@ -146,7 +147,7 @@ class HomeLabApp(tk.Tk):
         btn_inaction = tk.Button(
             self,
             text="Turn Off Device",
-            command=self._handle_action,
+            command=self._handle_action_off,
             bg="#2980b9",
             fg="white",
             font=("Arial", 10, "bold"),
@@ -156,6 +157,16 @@ class HomeLabApp(tk.Tk):
             pady=6
         )
         btn_inaction.pack(pady=15)
+
+        log_frame = tk.LabelFrame(self, text=" Activity Log ", font=("Arial", 11, "bold"))
+        log_frame.pack(fill="both", expand=True, padx=20, pady=10)
+
+        self.log_list = tk.Listbox(log_frame, height=5, font=("Consolas", 10))
+        self.log_list.pack(side="left", fill="both", expand=True)
+
+        scrollbar = tk.Scrollbar(log_frame, command=self.log_list.yview)
+        scrollbar.pack(side="right", fill="y")
+        self.log_list.config(yscrollcommand=scrollbar.set)
 
         # Output / Results Box
         self.lbl_output = tk.Label(
@@ -171,7 +182,7 @@ class HomeLabApp(tk.Tk):
         )
         self.lbl_output.pack(fill="x", padx=20, pady=5)
 
-    def _handle_action(self):
+    def _handle_action_on(self):
         # 1. Get the current key selected by the user
         chosen_key = self.selected_key.get()
 
@@ -184,7 +195,24 @@ class HomeLabApp(tk.Tk):
 
         # 4. Display result in the UI
         self.lbl_output.config(text=result_message, font=("Arial", 10, "normal"))
+        self.log_list.insert(tk.END, result_message)
+        self.log_list.see(tk.END) 
 
+    def _handle_action_off(self):
+        # 1. Get the current key selected by the user
+        chosen_key = self.selected_key.get()
+
+        # 2. Retrieve the active polymorphic object
+        active_object: SmartDevice = self.items[chosen_key]
+
+        # 3. POLYMORPHIC EXECUTION:
+        # No 'if/elif' logic needed. Python runs the appropriate implementation!
+        result_message = active_object.turn_off()
+
+        # 4. Display result in the UI
+        self.lbl_output.config(text=result_message, font=("Arial", 10, "normal"))
+        self.log_list.insert(tk.END, result_message)
+        self.log_list.see(tk.END) 
 
 
 # LAUNCHER
