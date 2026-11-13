@@ -6,17 +6,13 @@ from fpdf import FPDF
 
 
 class Exportador:
-    """Clase base (interfaz). Las subclases deben sobrescribir exportar()."""
 
-    # Orden de las columnas de la tabla `productos`
     COLUMNAS = ("id", "nombre", "precio", "stock")
 
     def exportar(self, datos, ruta_archivo):
-        """Método que debe ser sobrescrito por las clases hijas"""
         raise NotImplementedError("Este método debe ser implementado por la subclase.")
 
     def _a_diccionario(self, fila):
-        """Acepta filas como diccionario (así las devuelve el Modelo) o como tupla."""
         if isinstance(fila, dict):
             return fila
         return dict(zip(self.COLUMNAS, fila))
@@ -37,8 +33,6 @@ class ExportadorTXT(Exportador):
 
 class ExportadorCSV(Exportador):
     def exportar(self, datos, ruta_archivo):
-        # newline="" evita líneas en blanco extra en Windows;
-        # utf-8-sig hace que Excel muestre bien los acentos
         with open(ruta_archivo, "w", newline="", encoding="utf-8-sig") as file:
             writer = csv.writer(file)
             writer.writerow(self.COLUMNAS)
@@ -51,7 +45,6 @@ class ExportadorCSV(Exportador):
 class ExportadorJSON(Exportador):
     @staticmethod
     def _serializar(valor):
-        # MySQL devuelve DECIMAL como decimal.Decimal, que json no sabe serializar
         if isinstance(valor, Decimal):
             return float(valor)
         return str(valor)
@@ -73,21 +66,17 @@ class ExportadorJSON(Exportador):
 class ExportadorPDF(Exportador):
     @staticmethod
     def _seguro(texto):
-        # Las fuentes base de FPDF solo soportan latin-1 (á, ñ, etc. sí; emojis no)
         return str(texto).encode("latin-1", "replace").decode("latin-1")
 
     def exportar(self, datos, ruta_archivo):
         pdf = FPDF()
         pdf.add_page()
 
-        # Configuración del título
         pdf.set_font("Arial", "B", 16)
         pdf.cell(200, 10, txt="Reporte de Inventario de Productos", ln=True, align="C")
 
-        # Salto de línea
         pdf.ln(10)
 
-        # Configuración del cuerpo del documento
         pdf.set_font("Arial", size=12)
 
         for fila in datos:

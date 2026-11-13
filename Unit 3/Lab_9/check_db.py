@@ -1,4 +1,3 @@
-"""Diagnóstico: ejecuta `python check_db.py` desde la carpeta Lab_7."""
 import mysql.connector
 from mysql.connector import Error
 from Controller.config import DB_config
