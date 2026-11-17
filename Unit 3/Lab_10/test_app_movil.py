@@ -16,7 +16,7 @@ def perfil():
 
 @pytest.fixture
 def perfil_pro():
-    return PerfilPro("kal_pro", meses_suscripcion=3)
+    return PerfilPro("kal-pro", meses_suscripcion=3)
 
 
 def test_valores_iniciales(perfil):

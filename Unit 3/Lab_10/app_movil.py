@@ -1,10 +1,10 @@
 
 class AppMovilError(Exception):
-    """Error base para toda la aplicacion"""
+    """Error base para toda la aplicacion  """
 
 
 class SuscripcionExpiradaError(AppMovilError):
-    """Error cuando una suscripcion es invalida"""
+    """Error cuando una suscripcion es invalida   """
 
 
 class PuntosInsuficientesError(AppMovilError):
